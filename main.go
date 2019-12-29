@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
 	"time"
@@ -35,6 +36,12 @@ func main() {
 	client, err := Open()
 	if err != nil {
 		log.Fatalf("failed opening connection to sqlite: %v", err)
+	}
+	defer client.Close()
+
+	// Auto migration
+	if err := client.Schema.Create(context.Background()); err != nil {
+		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
 	redisHandler := infra.InitRedisHandler(redisHost, redisPort)

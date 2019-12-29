@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/Shikugawa/potraq/controller"
 	"github.com/Shikugawa/potraq/ent"
 	"github.com/Shikugawa/potraq/interface/middleware"
 	"github.com/gorilla/mux"
@@ -16,6 +17,13 @@ import (
 
 func Router(dbClient *ent.Client, redisClient *middleware.RedisHandler) {
 	r := mux.NewRouter()
+
+	userController := controller.InitUserController(dbClient)
+	oauthController := controller.InitOauthController(dbClient)
+
+	r.HandleFunc("/api/user/register", userController.Register)
+	r.HandleFunc("/api/auth", oauthController.Auth)
+
 	srv := &http.Server{
 		Handler: r,
 		Addr:    ":8000",

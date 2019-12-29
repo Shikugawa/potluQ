@@ -19,7 +19,7 @@ import (
 )
 
 type JwtService struct {
-	client *ent.Client
+	Client *ent.Client
 }
 
 var (
@@ -74,7 +74,7 @@ func (service *JwtService) prepareRsaPrivateKey(ctx context.Context, credential 
 	}
 
 	userserv := UserService{
-		client: service.client,
+		Client: service.Client,
 	}
 	result := userserv.VerityPassword(ctx, credential)
 	if !result {

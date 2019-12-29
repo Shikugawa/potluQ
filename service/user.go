@@ -3,17 +3,17 @@ package service
 import (
 	"context"
 
-	"github.com/Shikugawa/potraq/controller"
 	"github.com/Shikugawa/potraq/ent"
 	"github.com/Shikugawa/potraq/ent/user"
+	"github.com/Shikugawa/potraq/message"
 )
 
 type UserService struct {
-	client *ent.Client
+	Client *ent.Client
 }
 
 func (service *UserService) CreateUser(ctx context.Context, user *ent.User) error {
-	_, err := service.client.User.
+	_, err := service.Client.User.
 		Create().
 		SetEmail(user.Email).
 		SetName(user.Name).
@@ -25,8 +25,8 @@ func (service *UserService) CreateUser(ctx context.Context, user *ent.User) erro
 	return nil
 }
 
-func (service *UserService) FindByUser(ctx context.Context, email string) (*ent.User, error) {
-	user, err := service.client.User.
+func (service *UserService) FindByEmail(ctx context.Context, email string) (*ent.User, error) {
+	user, err := service.Client.User.
 		Query().
 		Where(user.EmailEQ(email)).
 		Only(ctx)
@@ -36,8 +36,8 @@ func (service *UserService) FindByUser(ctx context.Context, email string) (*ent.
 	return user, nil
 }
 
-func (service *UserService) VerityPassword(ctx context.Context, credential *controller.Credential) bool {
-	user, err := service.FindByUser(ctx, credential.Email)
+func (service *UserService) VerityPassword(ctx context.Context, credential *message.Credential) bool {
+	user, err := service.FindByEmail(ctx, credential.Email)
 	if err != nil {
 		return false
 	}
