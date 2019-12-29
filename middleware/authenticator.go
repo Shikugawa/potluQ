@@ -1,4 +1,4 @@
-package middlewre
+package middleware
 
 import (
 	"crypto/rsa"

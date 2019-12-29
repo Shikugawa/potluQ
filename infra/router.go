@@ -11,18 +11,24 @@ import (
 
 	"github.com/Shikugawa/potraq/controller"
 	"github.com/Shikugawa/potraq/ent"
-	"github.com/Shikugawa/potraq/interface/middleware"
+	"github.com/Shikugawa/potraq/message"
+	"github.com/Shikugawa/potraq/middleware"
 	"github.com/gorilla/mux"
 )
 
-func Router(dbClient *ent.Client, redisClient *middleware.RedisHandler, queue chan Queue) {
+func Router(dbClient *ent.Client, redisClient *RedisHandler, queue chan message.QueueMessage) {
 	r := mux.NewRouter()
 
 	userController := controller.InitUserController(dbClient)
 	oauthController := controller.InitOauthController(dbClient)
+	publishController := controller.InitPublishController(dbClient, queue)
+
+	authenticator := middleware.InitAuthenticator()
+	factory := InitMiddlewareFactory(authenticator.Authenticate)
 
 	r.HandleFunc("/api/user/register", userController.Register)
 	r.HandleFunc("/api/auth", oauthController.Auth)
+	r.HandleFunc("/api/queue/enqueue", factory.Get(publishController.EnqueueMusic))
 
 	srv := &http.Server{
 		Handler: r,

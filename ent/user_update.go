@@ -16,7 +16,6 @@ import (
 // UserUpdate is the builder for updating User entities.
 type UserUpdate struct {
 	config
-	name          *string
 	user_id       *string
 	email         *string
 	password      *string
@@ -28,12 +27,6 @@ type UserUpdate struct {
 // Where adds a new predicate for the builder.
 func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 	uu.predicates = append(uu.predicates, ps...)
-	return uu
-}
-
-// SetName sets the name field.
-func (uu *UserUpdate) SetName(s string) *UserUpdate {
-	uu.name = &s
 	return uu
 }
 
@@ -140,13 +133,6 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value := uu.name; value != nil {
-		spec.Fields.Set = append(spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  *value,
-			Column: user.FieldName,
-		})
-	}
 	if value := uu.user_id; value != nil {
 		spec.Fields.Set = append(spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -219,18 +205,11 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 type UserUpdateOne struct {
 	config
 	id            int
-	name          *string
 	user_id       *string
 	email         *string
 	password      *string
 	device        map[int]struct{}
 	removedDevice map[int]struct{}
-}
-
-// SetName sets the name field.
-func (uuo *UserUpdateOne) SetName(s string) *UserUpdateOne {
-	uuo.name = &s
-	return uuo
 }
 
 // SetUserID sets the user_id field.
@@ -329,13 +308,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 				Column: user.FieldID,
 			},
 		},
-	}
-	if value := uuo.name; value != nil {
-		spec.Fields.Set = append(spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  *value,
-			Column: user.FieldName,
-		})
 	}
 	if value := uuo.user_id; value != nil {
 		spec.Fields.Set = append(spec.Fields.Set, &sqlgraph.FieldSpec{

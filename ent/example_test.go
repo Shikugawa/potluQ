@@ -78,7 +78,6 @@ func ExampleDevice() {
 	// creating vertices for the device's edges.
 	u1 := client.User.
 		Create().
-		SetName("string").
 		SetUserID("string").
 		SetEmail("string").
 		SetPassword("string").
@@ -142,7 +141,6 @@ func ExampleUser() {
 	// create user vertex with its edges.
 	u := client.User.
 		Create().
-		SetName("string").
 		SetUserID("string").
 		SetEmail("string").
 		SetPassword("string").

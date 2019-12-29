@@ -8,6 +8,7 @@ import (
 
 	"github.com/Shikugawa/potraq/ent"
 	"github.com/Shikugawa/potraq/infra"
+	"github.com/Shikugawa/potraq/message"
 	"github.com/facebookincubator/ent/dialect/sql"
 )
 
@@ -44,7 +45,7 @@ func main() {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
-	queue := make(chan infra.Queue, 1)
+	queue := make(chan message.QueueMessage)
 	redisHandler := infra.InitRedisHandler(redisHost, redisPort)
 	infra.Router(client, &redisHandler, queue)
 }
