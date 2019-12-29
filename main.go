@@ -44,6 +44,7 @@ func main() {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
+	queue := make(chan infra.Queue, 1)
 	redisHandler := infra.InitRedisHandler(redisHost, redisPort)
-	infra.Router(client, &redisHandler)
+	infra.Router(client, &redisHandler, queue)
 }

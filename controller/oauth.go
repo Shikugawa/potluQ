@@ -14,12 +14,16 @@ import (
 )
 
 type OauthController struct {
-	service *service.JwtService
+	oauthService *service.JwtService
+	userService  *service.UserService
 }
 
 func InitOauthController(client *ent.Client) *OauthController {
 	return &OauthController{
-		service: &service.JwtService{
+		oauthService: &service.JwtService{
+			Client: client,
+		},
+		userService: &service.UserService{
 			Client: client,
 		},
 	}
@@ -32,14 +36,25 @@ func (oauth *OauthController) Auth(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		if check := oauth.userService.VerityPassword(context.Background(), &credential); !check {
+			http.Error(w, "invalid password", http.StatusUnauthorized)
+			return
+		}
+
+		user, err := oauth.userService.FindByEmail(context.Background(), credential.Email)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("%s is not registered", credential.Email), http.StatusUnauthorized)
+			return
+		}
+
 		var token string
-		var err error
 
 		switch credential.Status {
 		case message.JUKEBOX:
-			token, err = oauth.service.CreateJukeboxJwt(context.Background(), &credential)
+			token, err = oauth.oauthService.CreateJukeboxJwt(context.Background(), user)
 		case message.REQUESTER:
-			token, err = oauth.service.CreateRequesterJwt(context.Background(), &credential)
+			token, err = oauth.oauthService.CreateRequesterJwt(context.Background(), user)
 		default:
 			http.Error(w, fmt.Sprintf("status %s is not supported", credential.Status), http.StatusBadRequest)
 			return

@@ -17,6 +17,8 @@ type User struct {
 	ID int `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// UserID holds the value of the "user_id" field.
+	UserID string `json:"user_id,omitempty"`
 	// Email holds the value of the "email" field.
 	Email string `json:"email,omitempty"`
 	// Password holds the value of the "password" field.
@@ -27,6 +29,7 @@ type User struct {
 func (*User) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{},
+		&sql.NullString{},
 		&sql.NullString{},
 		&sql.NullString{},
 		&sql.NullString{},
@@ -51,12 +54,17 @@ func (u *User) assignValues(values ...interface{}) error {
 		u.Name = value.String
 	}
 	if value, ok := values[1].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field email", values[1])
+		return fmt.Errorf("unexpected type %T for field user_id", values[1])
+	} else if value.Valid {
+		u.UserID = value.String
+	}
+	if value, ok := values[2].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field email", values[2])
 	} else if value.Valid {
 		u.Email = value.String
 	}
-	if value, ok := values[2].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field password", values[2])
+	if value, ok := values[3].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field password", values[3])
 	} else if value.Valid {
 		u.Password = value.String
 	}
@@ -93,6 +101,8 @@ func (u *User) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", u.ID))
 	builder.WriteString(", name=")
 	builder.WriteString(u.Name)
+	builder.WriteString(", user_id=")
+	builder.WriteString(u.UserID)
 	builder.WriteString(", email=")
 	builder.WriteString(u.Email)
 	builder.WriteString(", password=<sensitive>")

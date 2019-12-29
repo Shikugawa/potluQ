@@ -7,14 +7,11 @@ import (
 
 	"context"
 
-	"errors"
-
 	"time"
 
 	"crypto/rsa"
 
 	"github.com/Shikugawa/potraq/ent"
-	"github.com/Shikugawa/potraq/message"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
@@ -26,14 +23,15 @@ var (
 	privateKeyPath = os.Getenv("RSA_PRIVATE_VERIFIER_PATH")
 )
 
-func (service *JwtService) CreateRequesterJwt(ctx context.Context, credential *message.Credential) (string, error) {
-	privKey, err := service.prepareRsaPrivateKey(ctx, credential)
+func (service *JwtService) CreateRequesterJwt(ctx context.Context, user *ent.User) (string, error) {
+	privKey, err := service.prepareRsaPrivateKey(ctx, user)
 	if err != nil {
 		return *new(string), err
 	}
 
 	token := jwt.New(jwt.SigningMethodES512)
 	claims := token.Claims.(jwt.StandardClaims)
+	claims.Id = user.UserID
 	claims.Subject = "Token is used for register music only"
 	claims.ExpiresAt = time.Now().Add(time.Hour * 24).Unix()
 
@@ -44,14 +42,15 @@ func (service *JwtService) CreateRequesterJwt(ctx context.Context, credential *m
 	return tokenstr, nil
 }
 
-func (service *JwtService) CreateJukeboxJwt(ctx context.Context, credential *message.Credential) (string, error) {
-	privKey, err := service.prepareRsaPrivateKey(ctx, credential)
+func (service *JwtService) CreateJukeboxJwt(ctx context.Context, user *ent.User) (string, error) {
+	privKey, err := service.prepareRsaPrivateKey(ctx, user)
 	if err != nil {
 		return *new(string), err
 	}
 
 	token := jwt.New(jwt.SigningMethodES512)
 	claims := token.Claims.(jwt.StandardClaims)
+	claims.Id = user.UserID
 	claims.Subject = "Token is used for jukebox that allows to get music in addition to requester service"
 	claims.ExpiresAt = time.Now().Add(time.Hour * 24).Unix()
 
@@ -62,7 +61,7 @@ func (service *JwtService) CreateJukeboxJwt(ctx context.Context, credential *mes
 	return tokenstr, nil
 }
 
-func (service *JwtService) prepareRsaPrivateKey(ctx context.Context, credential *message.Credential) (*rsa.PrivateKey, error) {
+func (service *JwtService) prepareRsaPrivateKey(ctx context.Context, user *ent.User) (*rsa.PrivateKey, error) {
 	signBytes, err := ioutil.ReadFile(privateKeyPath)
 	if err != nil {
 		return nil, err
@@ -71,14 +70,6 @@ func (service *JwtService) prepareRsaPrivateKey(ctx context.Context, credential 
 	signKey, err := jwt.ParseRSAPrivateKeyFromPEM(signBytes)
 	if err != nil {
 		return nil, err
-	}
-
-	userserv := UserService{
-		Client: service.Client,
-	}
-	result := userserv.VerityPassword(ctx, credential)
-	if !result {
-		return nil, errors.New("can't create vaild token") // TODO: enrich message
 	}
 
 	return signKey, nil

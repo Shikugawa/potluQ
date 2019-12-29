@@ -9,6 +9,8 @@ const (
 	FieldID = "id"
 	// FieldName holds the string denoting the name vertex property in the database.
 	FieldName = "name"
+	// FieldUserID holds the string denoting the user_id vertex property in the database.
+	FieldUserID = "user_id"
 	// FieldEmail holds the string denoting the email vertex property in the database.
 	FieldEmail = "email"
 	// FieldPassword holds the string denoting the password vertex property in the database.
@@ -27,6 +29,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldName,
+	FieldUserID,
 	FieldEmail,
 	FieldPassword,
 }

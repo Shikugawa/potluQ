@@ -79,6 +79,7 @@ func ExampleDevice() {
 	u1 := client.User.
 		Create().
 		SetName("string").
+		SetUserID("string").
 		SetEmail("string").
 		SetPassword("string").
 		SaveX(ctx)
@@ -142,6 +143,7 @@ func ExampleUser() {
 	u := client.User.
 		Create().
 		SetName("string").
+		SetUserID("string").
 		SetEmail("string").
 		SetPassword("string").
 		SaveX(ctx)
