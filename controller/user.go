@@ -8,16 +8,17 @@ import (
 
 	"github.com/Shikugawa/potraq/ent"
 	"github.com/Shikugawa/potraq/service"
+	"github.com/google/uuid"
 )
 
 type UserController struct {
 	service *service.UserService
 }
 
-func InitUserController(client *ent.Client) *UserController {
+func InitUserController(c *ent.Client) *UserController {
 	return &UserController{
 		service: &service.UserService{
-			Client: client,
+			Client: c,
 		},
 	}
 }
@@ -29,6 +30,8 @@ func (controller *UserController) Register(w http.ResponseWriter, r *http.Reques
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		uuid, _ := uuid.NewRandom()
+		user.UserID = uuid.String()
 		_, err := controller.service.FindByEmail(context.Background(), user.Email)
 		if err != nil {
 			controller.service.CreateUser(context.Background(), &user)

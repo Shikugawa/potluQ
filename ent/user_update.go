@@ -17,6 +17,7 @@ import (
 type UserUpdate struct {
 	config
 	name          *string
+	user_id       *string
 	email         *string
 	password      *string
 	device        map[int]struct{}
@@ -33,6 +34,12 @@ func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 // SetName sets the name field.
 func (uu *UserUpdate) SetName(s string) *UserUpdate {
 	uu.name = &s
+	return uu
+}
+
+// SetUserID sets the user_id field.
+func (uu *UserUpdate) SetUserID(s string) *UserUpdate {
+	uu.user_id = &s
 	return uu
 }
 
@@ -140,6 +147,13 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldName,
 		})
 	}
+	if value := uu.user_id; value != nil {
+		spec.Fields.Set = append(spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: user.FieldUserID,
+		})
+	}
 	if value := uu.email; value != nil {
 		spec.Fields.Set = append(spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -206,6 +220,7 @@ type UserUpdateOne struct {
 	config
 	id            int
 	name          *string
+	user_id       *string
 	email         *string
 	password      *string
 	device        map[int]struct{}
@@ -215,6 +230,12 @@ type UserUpdateOne struct {
 // SetName sets the name field.
 func (uuo *UserUpdateOne) SetName(s string) *UserUpdateOne {
 	uuo.name = &s
+	return uuo
+}
+
+// SetUserID sets the user_id field.
+func (uuo *UserUpdateOne) SetUserID(s string) *UserUpdateOne {
+	uuo.user_id = &s
 	return uuo
 }
 
@@ -314,6 +335,13 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 			Type:   field.TypeString,
 			Value:  *value,
 			Column: user.FieldName,
+		})
+	}
+	if value := uuo.user_id; value != nil {
+		spec.Fields.Set = append(spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: user.FieldUserID,
 		})
 	}
 	if value := uuo.email; value != nil {

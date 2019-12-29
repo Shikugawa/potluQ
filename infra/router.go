@@ -15,7 +15,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Router(dbClient *ent.Client, redisClient *middleware.RedisHandler) {
+func Router(dbClient *ent.Client, redisClient *middleware.RedisHandler, queue chan Queue) {
 	r := mux.NewRouter()
 
 	userController := controller.InitUserController(dbClient)

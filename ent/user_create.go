@@ -16,6 +16,7 @@ import (
 type UserCreate struct {
 	config
 	name     *string
+	user_id  *string
 	email    *string
 	password *string
 	device   map[int]struct{}
@@ -24,6 +25,12 @@ type UserCreate struct {
 // SetName sets the name field.
 func (uc *UserCreate) SetName(s string) *UserCreate {
 	uc.name = &s
+	return uc
+}
+
+// SetUserID sets the user_id field.
+func (uc *UserCreate) SetUserID(s string) *UserCreate {
+	uc.user_id = &s
 	return uc
 }
 
@@ -64,6 +71,9 @@ func (uc *UserCreate) Save(ctx context.Context) (*User, error) {
 	if uc.name == nil {
 		return nil, errors.New("ent: missing required field \"name\"")
 	}
+	if uc.user_id == nil {
+		return nil, errors.New("ent: missing required field \"user_id\"")
+	}
 	if uc.email == nil {
 		return nil, errors.New("ent: missing required field \"email\"")
 	}
@@ -100,6 +110,14 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 			Column: user.FieldName,
 		})
 		u.Name = *value
+	}
+	if value := uc.user_id; value != nil {
+		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  *value,
+			Column: user.FieldUserID,
+		})
+		u.UserID = *value
 	}
 	if value := uc.email; value != nil {
 		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
