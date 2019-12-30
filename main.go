@@ -17,8 +17,6 @@ var (
 	dbPassword = os.Getenv("MYSQL_PASSWORD")
 	dbHost     = os.Getenv("MYSQL_HOST")
 	dbPort     = os.Getenv("MYSQL_PORT")
-	redisHost  = os.Getenv("REDIS_HOST")
-	redisPort  = os.Getenv("REDIS_PORT")
 )
 
 func Open() (*ent.Client, error) {
@@ -46,6 +44,6 @@ func main() {
 	}
 
 	queue := make(chan message.QueueMessage)
-	redisHandler := infra.InitRedisHandler(redisHost, redisPort)
-	infra.Router(client, redisHandler, &queue)
+
+	infra.Router(client, &queue)
 }

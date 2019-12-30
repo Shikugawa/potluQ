@@ -9,25 +9,30 @@ import (
 	"net/url"
 
 	"github.com/Shikugawa/potraq/ent"
+	"github.com/Shikugawa/potraq/external"
 	"github.com/Shikugawa/potraq/message"
 	"github.com/Shikugawa/potraq/service"
 )
 
-type PublishController struct {
-	Queue       *chan message.QueueMessage
-	userService *service.UserService
+type QueueController struct {
+	Queue           *chan message.QueueMessage
+	consumerService *service.Consumer
+	userService     *service.UserService
 }
 
-func InitPublishController(client *ent.Client, queue *chan message.QueueMessage) *PublishController {
-	return &PublishController{
+func InitQueueController(client *ent.Client, redisHandler external.RedisHandler, queue *chan message.QueueMessage) *QueueController {
+	return &QueueController{
 		Queue: queue,
+		consumerService: &service.Consumer{
+			Handler: redisHandler,
+		},
 		userService: &service.UserService{
 			Client: client,
 		},
 	}
 }
 
-func (controller *PublishController) EnqueueMusic(w http.ResponseWriter, r *http.Request) {
+func (controller *QueueController) EnqueueMusic(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		var publish message.Publish
 		if err := json.NewDecoder(r.Body).Decode(&publish); err != nil {
@@ -60,14 +65,34 @@ func (controller *PublishController) EnqueueMusic(w http.ResponseWriter, r *http
 	}
 }
 
-func (controller *PublishController) mediaType(rawurl string) (message.Media, error) {
+func (controller *QueueController) DequeueMusic(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		clubName := r.Header.Get("club_name")
+		music, err := controller.consumerService.Consume(clubName)
+		w.WriteHeader(http.StatusOK)
+
+		if err != nil {
+			errMsg := message.Error{
+				Message: err.Error(),
+			}
+			byteMsg, _ := json.Marshal(errMsg)
+			w.Write(byteMsg)
+			return
+		}
+
+		byteMsg, _ := json.Marshal(music)
+		w.Write(byteMsg)
+		return
+	}
+}
+
+func (controller *QueueController) mediaType(rawurl string) (message.Media, error) {
 	u, err := url.Parse(rawurl)
 	if err != nil {
 		return -1, err
 	}
 	switch u.Hostname() {
-	case "youtube.com":
-	case "www.youtube.com":
+	case "www.youtube.com", "youtube.com":
 		return message.YouTube, nil
 	}
 	return -1, nil
