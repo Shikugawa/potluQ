@@ -36,6 +36,17 @@ func (service *UserService) FindByEmail(ctx context.Context, email string) (*ent
 	return user, nil
 }
 
+func (service *UserService) FindByUserId(ctx context.Context, name string) (*ent.User, error) {
+	user, err := service.Client.User.
+		Query().
+		Where(user.NameEQ(name)).
+		Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 func (service *UserService) VerityPassword(ctx context.Context, credential *message.Credential) bool {
 	user, err := service.FindByEmail(ctx, credential.Email)
 	if err != nil {

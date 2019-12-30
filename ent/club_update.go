@@ -18,7 +18,6 @@ import (
 type ClubUpdate struct {
 	config
 	name          *string
-	random_id     *string
 	music         map[int]struct{}
 	device        map[int]struct{}
 	removedMusic  map[int]struct{}
@@ -35,12 +34,6 @@ func (cu *ClubUpdate) Where(ps ...predicate.Club) *ClubUpdate {
 // SetName sets the name field.
 func (cu *ClubUpdate) SetName(s string) *ClubUpdate {
 	cu.name = &s
-	return cu
-}
-
-// SetRandomID sets the random_id field.
-func (cu *ClubUpdate) SetRandomID(s string) *ClubUpdate {
-	cu.random_id = &s
 	return cu
 }
 
@@ -176,13 +169,6 @@ func (cu *ClubUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: club.FieldName,
 		})
 	}
-	if value := cu.random_id; value != nil {
-		spec.Fields.Set = append(spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  *value,
-			Column: club.FieldRandomID,
-		})
-	}
 	if nodes := cu.removedMusic; len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -273,7 +259,6 @@ type ClubUpdateOne struct {
 	config
 	id            int
 	name          *string
-	random_id     *string
 	music         map[int]struct{}
 	device        map[int]struct{}
 	removedMusic  map[int]struct{}
@@ -283,12 +268,6 @@ type ClubUpdateOne struct {
 // SetName sets the name field.
 func (cuo *ClubUpdateOne) SetName(s string) *ClubUpdateOne {
 	cuo.name = &s
-	return cuo
-}
-
-// SetRandomID sets the random_id field.
-func (cuo *ClubUpdateOne) SetRandomID(s string) *ClubUpdateOne {
-	cuo.random_id = &s
 	return cuo
 }
 
@@ -416,13 +395,6 @@ func (cuo *ClubUpdateOne) sqlSave(ctx context.Context) (c *Club, err error) {
 			Type:   field.TypeString,
 			Value:  *value,
 			Column: club.FieldName,
-		})
-	}
-	if value := cuo.random_id; value != nil {
-		spec.Fields.Set = append(spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  *value,
-			Column: club.FieldRandomID,
 		})
 	}
 	if nodes := cuo.removedMusic; len(nodes) > 0 {

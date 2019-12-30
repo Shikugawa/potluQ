@@ -17,15 +17,12 @@ type Club struct {
 	ID int `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// RandomID holds the value of the "random_id" field.
-	RandomID string `json:"random_id,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Club) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{},
-		&sql.NullString{},
 		&sql.NullString{},
 	}
 }
@@ -46,11 +43,6 @@ func (c *Club) assignValues(values ...interface{}) error {
 		return fmt.Errorf("unexpected type %T for field name", values[0])
 	} else if value.Valid {
 		c.Name = value.String
-	}
-	if value, ok := values[1].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field random_id", values[1])
-	} else if value.Valid {
-		c.RandomID = value.String
 	}
 	return nil
 }
@@ -90,8 +82,6 @@ func (c *Club) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", c.ID))
 	builder.WriteString(", name=")
 	builder.WriteString(c.Name)
-	builder.WriteString(", random_id=")
-	builder.WriteString(c.RandomID)
 	builder.WriteByte(')')
 	return builder.String()
 }

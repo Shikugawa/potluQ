@@ -8,6 +8,7 @@ import (
 
 	"github.com/Shikugawa/potraq/ent"
 	"github.com/Shikugawa/potraq/infra"
+	"github.com/Shikugawa/potraq/message"
 	"github.com/facebookincubator/ent/dialect/sql"
 )
 
@@ -16,12 +17,10 @@ var (
 	dbPassword = os.Getenv("MYSQL_PASSWORD")
 	dbHost     = os.Getenv("MYSQL_HOST")
 	dbPort     = os.Getenv("MYSQL_PORT")
-	redisHost  = os.Getenv("REDIS_HOST")
-	redisPort  = os.Getenv("REDIS_PORT")
 )
 
 func Open() (*ent.Client, error) {
-	drv, err := sql.Open("mysql", "<mysql-dsn>")
+	drv, err := sql.Open("mysql", dbUser+":"+dbPassword+"@tcp("+dbHost+":"+dbPort)
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +34,7 @@ func Open() (*ent.Client, error) {
 func main() {
 	client, err := Open()
 	if err != nil {
-		log.Fatalf("failed opening connection to sqlite: %v", err)
+		log.Fatalf("failed opening connection to mysql: %v", err)
 	}
 	defer client.Close()
 
@@ -44,7 +43,7 @@ func main() {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
-	queue := make(chan infra.Queue, 1)
-	redisHandler := infra.InitRedisHandler(redisHost, redisPort)
-	infra.Router(client, &redisHandler, queue)
+	queue := make(chan message.QueueMessage)
+
+	infra.Router(client, &queue)
 }

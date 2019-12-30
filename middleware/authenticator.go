@@ -1,4 +1,4 @@
-package middlewre
+package middleware
 
 import (
 	"crypto/rsa"
@@ -40,12 +40,31 @@ func (auth *Authenticator) Authenticate(next http.HandlerFunc) http.HandlerFunc 
 		})
 
 		if token.Valid {
-			next.ServeHTTP(w, r)
+			claim := token.Claims.(jwt.MapClaims)
+
+			if auth.validateClaimsProps(claim, "user_name", "club_name") {
+				r.Header.Add("x-potraq-user-name", claim["user_name"].(string))
+				r.Header.Add("x-potraq-club-name", claim["club_name"].(string))
+				next.ServeHTTP(w, r)
+			} else {
+				http.Error(w, "missing jwt property", http.StatusBadRequest)
+				return
+			}
+
 		} else {
 			http.Error(w, "Invalid token", http.StatusUnauthorized)
 			return
 		}
 	}
+}
+
+func (auth *Authenticator) validateClaimsProps(mapclaim jwt.MapClaims, must ...string) bool {
+	for _, m := range must {
+		if mapclaim[m] == "" {
+			return false
+		}
+	}
+	return true
 }
 
 func (auth *Authenticator) pubKey() (*rsa.PublicKey, error) {
