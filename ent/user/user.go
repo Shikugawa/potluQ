@@ -7,8 +7,8 @@ const (
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldUserID holds the string denoting the user_id vertex property in the database.
-	FieldUserID = "user_id"
+	// FieldName holds the string denoting the name vertex property in the database.
+	FieldName = "name"
 	// FieldEmail holds the string denoting the email vertex property in the database.
 	FieldEmail = "email"
 	// FieldPassword holds the string denoting the password vertex property in the database.
@@ -26,7 +26,7 @@ const (
 // Columns holds all SQL columns are user fields.
 var Columns = []string{
 	FieldID,
-	FieldUserID,
+	FieldName,
 	FieldEmail,
 	FieldPassword,
 }

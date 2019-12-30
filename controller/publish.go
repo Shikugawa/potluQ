@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"context"
-
 	"fmt"
 
 	"net/url"
@@ -37,22 +35,20 @@ func (controller *PublishController) EnqueueMusic(w http.ResponseWriter, r *http
 			return
 		}
 
-		user, err := controller.userService.FindByUserId(context.Background(), publish.UserId)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
 		if media, err := controller.mediaType(publish.Url); err == nil {
+			clubName := r.Header.Get("club_name")
+			userName := r.Header.Get("user_name")
+
 			switch media {
 			case message.YouTube:
 				*controller.Queue <- message.QueueMessage{
-					User:      user,
+					ClubName:  clubName,
+					UserName:  userName,
 					Url:       publish.Url,
 					MediaType: media,
 				}
 			default:
-				http.Error(w, fmt.Sprintf("%s has unsupported media type", publish.UserId), http.StatusBadRequest)
+				http.Error(w, fmt.Sprintf("%s has unsupported media type", publish.Url), http.StatusBadRequest)
 				return
 			}
 		} else {

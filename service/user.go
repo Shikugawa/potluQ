@@ -36,10 +36,10 @@ func (service *UserService) FindByEmail(ctx context.Context, email string) (*ent
 	return user, nil
 }
 
-func (service *UserService) FindByUserId(ctx context.Context, userId string) (*ent.User, error) {
+func (service *UserService) FindByUserId(ctx context.Context, name string) (*ent.User, error) {
 	user, err := service.Client.User.
 		Query().
-		Where(user.UserIDEQ(userId)).
+		Where(user.NameEQ(name)).
 		Only(ctx)
 	if err != nil {
 		return nil, err

@@ -16,7 +16,7 @@ import (
 // UserUpdate is the builder for updating User entities.
 type UserUpdate struct {
 	config
-	user_id       *string
+	name          *string
 	email         *string
 	password      *string
 	device        map[int]struct{}
@@ -30,9 +30,9 @@ func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 	return uu
 }
 
-// SetUserID sets the user_id field.
-func (uu *UserUpdate) SetUserID(s string) *UserUpdate {
-	uu.user_id = &s
+// SetName sets the name field.
+func (uu *UserUpdate) SetName(s string) *UserUpdate {
+	uu.name = &s
 	return uu
 }
 
@@ -133,11 +133,11 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value := uu.user_id; value != nil {
+	if value := uu.name; value != nil {
 		spec.Fields.Set = append(spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  *value,
-			Column: user.FieldUserID,
+			Column: user.FieldName,
 		})
 	}
 	if value := uu.email; value != nil {
@@ -205,16 +205,16 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 type UserUpdateOne struct {
 	config
 	id            int
-	user_id       *string
+	name          *string
 	email         *string
 	password      *string
 	device        map[int]struct{}
 	removedDevice map[int]struct{}
 }
 
-// SetUserID sets the user_id field.
-func (uuo *UserUpdateOne) SetUserID(s string) *UserUpdateOne {
-	uuo.user_id = &s
+// SetName sets the name field.
+func (uuo *UserUpdateOne) SetName(s string) *UserUpdateOne {
+	uuo.name = &s
 	return uuo
 }
 
@@ -309,11 +309,11 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 			},
 		},
 	}
-	if value := uuo.user_id; value != nil {
+	if value := uuo.name; value != nil {
 		spec.Fields.Set = append(spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  *value,
-			Column: user.FieldUserID,
+			Column: user.FieldName,
 		})
 	}
 	if value := uuo.email; value != nil {

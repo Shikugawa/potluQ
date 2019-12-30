@@ -48,22 +48,12 @@ func (oauth *OauthController) Auth(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		var token string
-
-		switch credential.Status {
-		case message.JUKEBOX:
-			token, err = oauth.oauthService.CreateJukeboxJwt(context.Background(), user)
-		case message.REQUESTER:
-			token, err = oauth.oauthService.CreateRequesterJwt(context.Background(), user)
-		default:
-			http.Error(w, fmt.Sprintf("status %s is not supported", credential.Status), http.StatusBadRequest)
-			return
-		}
-
+		token, err := oauth.oauthService.DefaultJwt(user)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadGateway)
 			return
 		}
+
 		w.Write([]byte(token))
 		return
 	}

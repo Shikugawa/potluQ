@@ -16,21 +16,14 @@ import (
 // ClubCreate is the builder for creating a Club entity.
 type ClubCreate struct {
 	config
-	name      *string
-	random_id *string
-	music     map[int]struct{}
-	device    map[int]struct{}
+	name   *string
+	music  map[int]struct{}
+	device map[int]struct{}
 }
 
 // SetName sets the name field.
 func (cc *ClubCreate) SetName(s string) *ClubCreate {
 	cc.name = &s
-	return cc
-}
-
-// SetRandomID sets the random_id field.
-func (cc *ClubCreate) SetRandomID(s string) *ClubCreate {
-	cc.random_id = &s
 	return cc
 }
 
@@ -79,9 +72,6 @@ func (cc *ClubCreate) Save(ctx context.Context) (*Club, error) {
 	if cc.name == nil {
 		return nil, errors.New("ent: missing required field \"name\"")
 	}
-	if cc.random_id == nil {
-		return nil, errors.New("ent: missing required field \"random_id\"")
-	}
 	return cc.sqlSave(ctx)
 }
 
@@ -112,14 +102,6 @@ func (cc *ClubCreate) sqlSave(ctx context.Context) (*Club, error) {
 			Column: club.FieldName,
 		})
 		c.Name = *value
-	}
-	if value := cc.random_id; value != nil {
-		spec.Fields = append(spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  *value,
-			Column: club.FieldRandomID,
-		})
-		c.RandomID = *value
 	}
 	if nodes := cc.music; len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

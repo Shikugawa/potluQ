@@ -43,7 +43,6 @@ func ExampleClub() {
 	c := client.Club.
 		Create().
 		SetName("string").
-		SetRandomID("string").
 		AddMusic(m0).
 		AddDevice(d1).
 		SaveX(ctx)
@@ -78,7 +77,7 @@ func ExampleDevice() {
 	// creating vertices for the device's edges.
 	u1 := client.User.
 		Create().
-		SetUserID("string").
+		SetName("string").
 		SetEmail("string").
 		SetPassword("string").
 		SaveX(ctx)
@@ -141,7 +140,7 @@ func ExampleUser() {
 	// create user vertex with its edges.
 	u := client.User.
 		Create().
-		SetUserID("string").
+		SetName("string").
 		SetEmail("string").
 		SetPassword("string").
 		SaveX(ctx)

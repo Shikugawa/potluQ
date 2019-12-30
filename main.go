@@ -22,7 +22,7 @@ var (
 )
 
 func Open() (*ent.Client, error) {
-	drv, err := sql.Open("mysql", "<mysql-dsn>")
+	drv, err := sql.Open("mysql", dbUser+":"+dbPassword+"@tcp("+dbHost+":"+dbPort)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func Open() (*ent.Client, error) {
 func main() {
 	client, err := Open()
 	if err != nil {
-		log.Fatalf("failed opening connection to sqlite: %v", err)
+		log.Fatalf("failed opening connection to mysql: %v", err)
 	}
 	defer client.Close()
 

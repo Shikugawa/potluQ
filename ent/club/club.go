@@ -9,8 +9,6 @@ const (
 	FieldID = "id"
 	// FieldName holds the string denoting the name vertex property in the database.
 	FieldName = "name"
-	// FieldRandomID holds the string denoting the random_id vertex property in the database.
-	FieldRandomID = "random_id"
 
 	// Table holds the table name of the club in the database.
 	Table = "clubs"
@@ -34,5 +32,4 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldName,
-	FieldRandomID,
 }

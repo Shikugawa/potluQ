@@ -1,9 +1,5 @@
 package message
 
-import (
-	"github.com/Shikugawa/potraq/ent"
-)
-
 type Media int
 
 const (
@@ -11,7 +7,8 @@ const (
 )
 
 type QueueMessage struct {
-	User      *ent.User
+	UserName  string
+	ClubName  string
 	MediaType Media
 	Url       string
 }

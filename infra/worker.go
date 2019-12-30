@@ -27,5 +27,4 @@ func (worker *Worker) Start() {
 }
 
 func (worker *Worker) Enqueue(message *message.QueueMessage) {
-
 }

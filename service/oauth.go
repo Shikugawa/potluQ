@@ -5,13 +5,12 @@ import (
 
 	"os"
 
-	"context"
-
 	"time"
 
 	"crypto/rsa"
 
 	"github.com/Shikugawa/potraq/ent"
+	"github.com/Shikugawa/potraq/role"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
@@ -23,17 +22,17 @@ var (
 	privateKeyPath = os.Getenv("RSA_PRIVATE_VERIFIER_PATH")
 )
 
-func (service *JwtService) CreateRequesterJwt(ctx context.Context, user *ent.User) (string, error) {
-	privKey, err := service.prepareRsaPrivateKey(ctx, user)
+func (service *JwtService) DefaultJwt(user *ent.User) (string, error) {
+	privKey, err := service.prepareRsaPrivateKey()
 	if err != nil {
 		return *new(string), err
 	}
 
 	token := jwt.New(jwt.SigningMethodES512)
-	claims := token.Claims.(jwt.StandardClaims)
-	claims.Id = user.UserID
-	claims.Subject = "Token is used for register music only"
-	claims.ExpiresAt = time.Now().Add(time.Hour * 24).Unix()
+	claims := token.Claims.(jwt.MapClaims)
+	claims["user_name"] = user.Name
+	claims["role"] = role.DefaultRole
+	claims["expires_at"] = time.Now().Add(time.Hour * 24).Unix()
 
 	tokenstr, err := token.SignedString(privKey)
 	if err != nil {
@@ -42,17 +41,15 @@ func (service *JwtService) CreateRequesterJwt(ctx context.Context, user *ent.Use
 	return tokenstr, nil
 }
 
-func (service *JwtService) CreateJukeboxJwt(ctx context.Context, user *ent.User) (string, error) {
-	privKey, err := service.prepareRsaPrivateKey(ctx, user)
+func (service *JwtService) UpdateRole(token *jwt.Token, club *ent.Club, role role.Role) (string, error) {
+	privKey, err := service.prepareRsaPrivateKey()
 	if err != nil {
 		return *new(string), err
 	}
 
-	token := jwt.New(jwt.SigningMethodES512)
-	claims := token.Claims.(jwt.StandardClaims)
-	claims.Id = user.UserID
-	claims.Subject = "Token is used for jukebox that allows to get music in addition to requester service"
-	claims.ExpiresAt = time.Now().Add(time.Hour * 24).Unix()
+	claims := token.Claims.(jwt.MapClaims)
+	claims["club_name"] = club.Name
+	claims["role"] = role
 
 	tokenstr, err := token.SignedString(privKey)
 	if err != nil {
@@ -61,7 +58,7 @@ func (service *JwtService) CreateJukeboxJwt(ctx context.Context, user *ent.User)
 	return tokenstr, nil
 }
 
-func (service *JwtService) prepareRsaPrivateKey(ctx context.Context, user *ent.User) (*rsa.PrivateKey, error) {
+func (service *JwtService) prepareRsaPrivateKey() (*rsa.PrivateKey, error) {
 	signBytes, err := ioutil.ReadFile(privateKeyPath)
 	if err != nil {
 		return nil, err

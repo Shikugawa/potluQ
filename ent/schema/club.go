@@ -15,7 +15,6 @@ type Club struct {
 func (Club) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name"),
-		field.String("random_id"),
 	}
 }
 
