@@ -47,5 +47,5 @@ func main() {
 
 	queue := make(chan message.QueueMessage)
 	redisHandler := infra.InitRedisHandler(redisHost, redisPort)
-	infra.Router(client, &redisHandler, queue)
+	infra.Router(client, redisHandler, &queue)
 }

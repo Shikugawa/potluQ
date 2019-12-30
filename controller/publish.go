@@ -16,11 +16,11 @@ import (
 )
 
 type PublishController struct {
-	Queue       chan message.QueueMessage
+	Queue       *chan message.QueueMessage
 	userService *service.UserService
 }
 
-func InitPublishController(client *ent.Client, queue chan message.QueueMessage) *PublishController {
+func InitPublishController(client *ent.Client, queue *chan message.QueueMessage) *PublishController {
 	return &PublishController{
 		Queue: queue,
 		userService: &service.UserService{
@@ -46,7 +46,7 @@ func (controller *PublishController) EnqueueMusic(w http.ResponseWriter, r *http
 		if media, err := controller.mediaType(publish.Url); err == nil {
 			switch media {
 			case message.YouTube:
-				controller.Queue <- message.QueueMessage{
+				*controller.Queue <- message.QueueMessage{
 					User:      user,
 					Url:       publish.Url,
 					MediaType: media,

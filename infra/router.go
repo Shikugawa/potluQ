@@ -16,7 +16,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Router(dbClient *ent.Client, redisClient *RedisHandler, queue chan message.QueueMessage) {
+func Router(dbClient *ent.Client, redisClient *RedisHandler, queue *chan message.QueueMessage) {
 	r := mux.NewRouter()
 
 	userController := controller.InitUserController(dbClient)
@@ -29,6 +29,7 @@ func Router(dbClient *ent.Client, redisClient *RedisHandler, queue chan message.
 	r.HandleFunc("/api/user/register", userController.Register)
 	r.HandleFunc("/api/auth", oauthController.Auth)
 	r.HandleFunc("/api/queue/enqueue", factory.Get(publishController.EnqueueMusic))
+	r.HandleFunc("/api/queue/dequeue", nil)
 
 	srv := &http.Server{
 		Handler: r,
