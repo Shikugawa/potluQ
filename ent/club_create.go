@@ -6,9 +6,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/Shikugawa/potraq/ent/club"
-	"github.com/Shikugawa/potraq/ent/device"
-	"github.com/Shikugawa/potraq/ent/music"
+	"github.com/Shikugawa/potluq/ent/club"
+	"github.com/Shikugawa/potluq/ent/device"
+	"github.com/Shikugawa/potluq/ent/music"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 )

@@ -9,11 +9,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Shikugawa/potraq/controller"
-	"github.com/Shikugawa/potraq/ent"
-	"github.com/Shikugawa/potraq/external"
-	"github.com/Shikugawa/potraq/message"
-	"github.com/Shikugawa/potraq/middleware"
+	"github.com/Shikugawa/potluq/controller"
+	"github.com/Shikugawa/potluq/ent"
+	"github.com/Shikugawa/potluq/external"
+	"github.com/Shikugawa/potluq/message"
+	"github.com/Shikugawa/potluq/middleware"
 	"github.com/gorilla/mux"
 )
 

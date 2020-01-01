@@ -7,9 +7,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Shikugawa/potraq/ent/club"
-	"github.com/Shikugawa/potraq/ent/device"
-	"github.com/Shikugawa/potraq/ent/user"
+	"github.com/Shikugawa/potluq/ent/club"
+	"github.com/Shikugawa/potluq/ent/device"
+	"github.com/Shikugawa/potluq/ent/user"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 )

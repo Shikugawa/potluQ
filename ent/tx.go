@@ -5,7 +5,7 @@ package ent
 import (
 	"context"
 
-	"github.com/Shikugawa/potraq/ent/migrate"
+	"github.com/Shikugawa/potluq/ent/migrate"
 	"github.com/facebookincubator/ent/dialect"
 )
 

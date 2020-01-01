@@ -3,8 +3,8 @@ package infra
 import (
 	"encoding/json"
 
-	"github.com/Shikugawa/potraq/external"
-	"github.com/Shikugawa/potraq/message"
+	"github.com/Shikugawa/potluq/external"
+	"github.com/Shikugawa/potluq/message"
 	"github.com/go-redis/redis"
 )
 

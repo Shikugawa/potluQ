@@ -6,9 +6,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/Shikugawa/potraq/ent"
-	"github.com/Shikugawa/potraq/infra"
-	"github.com/Shikugawa/potraq/message"
+	"github.com/Shikugawa/potluq/ent"
+	"github.com/Shikugawa/potluq/infra"
+	"github.com/Shikugawa/potluq/message"
 	"github.com/facebookincubator/ent/dialect/sql"
 )
 

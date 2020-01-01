@@ -8,7 +8,7 @@ import (
 
 	"github.com/facebookincubator/ent/dialect/sql"
 
-	"github.com/Shikugawa/potraq/ent/device"
+	"github.com/Shikugawa/potluq/ent/device"
 )
 
 // dsn for the database. In order to run the tests locally, run the following command:

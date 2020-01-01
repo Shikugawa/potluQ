@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/Shikugawa/potraq/ent/device"
-	"github.com/Shikugawa/potraq/ent/predicate"
-	"github.com/Shikugawa/potraq/ent/user"
+	"github.com/Shikugawa/potluq/ent/device"
+	"github.com/Shikugawa/potluq/ent/predicate"
+	"github.com/Shikugawa/potluq/ent/user"
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"

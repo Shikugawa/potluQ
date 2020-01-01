@@ -6,8 +6,8 @@ import (
 
 	"context"
 
-	"github.com/Shikugawa/potraq/ent"
-	"github.com/Shikugawa/potraq/service"
+	"github.com/Shikugawa/potluq/ent"
+	"github.com/Shikugawa/potluq/service"
 )
 
 type UserController struct {

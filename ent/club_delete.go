@@ -5,8 +5,8 @@ package ent
 import (
 	"context"
 
-	"github.com/Shikugawa/potraq/ent/club"
-	"github.com/Shikugawa/potraq/ent/predicate"
+	"github.com/Shikugawa/potluq/ent/club"
+	"github.com/Shikugawa/potluq/ent/predicate"
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"

@@ -43,8 +43,8 @@ func (auth *Authenticator) Authenticate(next http.HandlerFunc) http.HandlerFunc 
 			claim := token.Claims.(jwt.MapClaims)
 
 			if auth.validateClaimsProps(claim, "user_name", "club_name") {
-				r.Header.Add("x-potraq-user-name", claim["user_name"].(string))
-				r.Header.Add("x-potraq-club-name", claim["club_name"].(string))
+				r.Header.Add("x-potluq-user-name", claim["user_name"].(string))
+				r.Header.Add("x-potluq-club-name", claim["club_name"].(string))
 				next.ServeHTTP(w, r)
 			} else {
 				http.Error(w, "missing jwt property", http.StatusBadRequest)

@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 
-	"github.com/Shikugawa/potraq/ent"
-	"github.com/Shikugawa/potraq/ent/user"
-	"github.com/Shikugawa/potraq/message"
+	"github.com/Shikugawa/potluq/ent"
+	"github.com/Shikugawa/potluq/ent/user"
+	"github.com/Shikugawa/potluq/message"
 )
 
 type UserService struct {

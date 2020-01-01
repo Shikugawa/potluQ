@@ -1,4 +1,4 @@
-module github.com/Shikugawa/potraq
+module github.com/Shikugawa/potluq
 
 go 1.13
 

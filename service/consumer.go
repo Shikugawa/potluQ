@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/Shikugawa/potraq/external"
-	"github.com/Shikugawa/potraq/message"
+	"github.com/Shikugawa/potluq/external"
+	"github.com/Shikugawa/potluq/message"
 )
 
 type Consumer struct {

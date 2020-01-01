@@ -8,10 +8,10 @@ import (
 
 	"net/url"
 
-	"github.com/Shikugawa/potraq/ent"
-	"github.com/Shikugawa/potraq/external"
-	"github.com/Shikugawa/potraq/message"
-	"github.com/Shikugawa/potraq/service"
+	"github.com/Shikugawa/potluq/ent"
+	"github.com/Shikugawa/potluq/external"
+	"github.com/Shikugawa/potluq/message"
+	"github.com/Shikugawa/potluq/service"
 )
 
 type QueueController struct {

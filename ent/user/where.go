@@ -3,7 +3,7 @@
 package user
 
 import (
-	"github.com/Shikugawa/potraq/ent/predicate"
+	"github.com/Shikugawa/potluq/ent/predicate"
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 )

@@ -9,8 +9,8 @@ import (
 
 	"crypto/rsa"
 
-	"github.com/Shikugawa/potraq/ent"
-	"github.com/Shikugawa/potraq/role"
+	"github.com/Shikugawa/potluq/ent"
+	"github.com/Shikugawa/potluq/role"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 

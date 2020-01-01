@@ -7,12 +7,12 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/Shikugawa/potraq/ent/migrate"
+	"github.com/Shikugawa/potluq/ent/migrate"
 
-	"github.com/Shikugawa/potraq/ent/club"
-	"github.com/Shikugawa/potraq/ent/device"
-	"github.com/Shikugawa/potraq/ent/music"
-	"github.com/Shikugawa/potraq/ent/user"
+	"github.com/Shikugawa/potluq/ent/club"
+	"github.com/Shikugawa/potluq/ent/device"
+	"github.com/Shikugawa/potluq/ent/music"
+	"github.com/Shikugawa/potluq/ent/user"
 
 	"github.com/facebookincubator/ent/dialect"
 	"github.com/facebookincubator/ent/dialect/sql"
