@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+  db:
+    container_name: db
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: potluq
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      TZ: 'Asia/Tokyo'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./data/mysql_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - ./data/redis_data:/data
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_NAME: potluq
+      REDUS_HOST: redis
+      REDIS_PORT: 6379
+    ports:
+      - 8000:8000
+    links: 
+      - db
+      - redis
+    depends_on:
+      - db
+      - redis
+    command: ./potluq --auto-migration
