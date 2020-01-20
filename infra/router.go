@@ -58,9 +58,9 @@ func Router(dbClient *ent.Client, queue *chan message.QueueMessage) {
 			log.Fatal(err)
 		}
 	}()
-
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGTERM, os.Interrupt)
+	<-sig
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

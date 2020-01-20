@@ -19,13 +19,11 @@ const (
 	MusicInverseTable = "musics"
 	// MusicColumn is the table column denoting the music relation/edge.
 	MusicColumn = "club_id"
-	// DeviceTable is the table the holds the device relation/edge.
-	DeviceTable = "devices"
-	// DeviceInverseTable is the table name for the Device entity.
-	// It exists in this package in order to avoid circular dependency with the "device" package.
-	DeviceInverseTable = "devices"
-	// DeviceColumn is the table column denoting the device relation/edge.
-	DeviceColumn = "club_id"
+	// UserTable is the table the holds the user relation/edge. The primary key declared below.
+	UserTable = "club_user"
+	// UserInverseTable is the table name for the User entity.
+	// It exists in this package in order to avoid circular dependency with the "user" package.
+	UserInverseTable = "users"
 )
 
 // Columns holds all SQL columns are club fields.
@@ -33,3 +31,9 @@ var Columns = []string{
 	FieldID,
 	FieldName,
 }
+
+var (
+	// UserPrimaryKey and UserColumn2 are the table columns denoting the
+	// primary key for the user relation (M2M).
+	UserPrimaryKey = []string{"club_id", "user_id"}
+)

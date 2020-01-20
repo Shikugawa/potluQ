@@ -23,6 +23,6 @@ func (User) Fields() []ent.Field {
 // Edges of the User.
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("device", Device.Type).Ref("user"),
+		edge.From("club", Club.Type).Ref("user"),
 	}
 }

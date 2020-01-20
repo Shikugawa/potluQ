@@ -6,9 +6,9 @@ import (
 	"context"
 
 	"github.com/Shikugawa/potluq/ent/club"
-	"github.com/Shikugawa/potluq/ent/device"
 	"github.com/Shikugawa/potluq/ent/music"
 	"github.com/Shikugawa/potluq/ent/predicate"
+	"github.com/Shikugawa/potluq/ent/user"
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
@@ -17,12 +17,12 @@ import (
 // ClubUpdate is the builder for updating Club entities.
 type ClubUpdate struct {
 	config
-	name          *string
-	music         map[int]struct{}
-	device        map[int]struct{}
-	removedMusic  map[int]struct{}
-	removedDevice map[int]struct{}
-	predicates    []predicate.Club
+	name         *string
+	music        map[int]struct{}
+	user         map[int]struct{}
+	removedMusic map[int]struct{}
+	removedUser  map[int]struct{}
+	predicates   []predicate.Club
 }
 
 // Where adds a new predicate for the builder.
@@ -57,24 +57,24 @@ func (cu *ClubUpdate) AddMusic(m ...*Music) *ClubUpdate {
 	return cu.AddMusicIDs(ids...)
 }
 
-// AddDeviceIDs adds the device edge to Device by ids.
-func (cu *ClubUpdate) AddDeviceIDs(ids ...int) *ClubUpdate {
-	if cu.device == nil {
-		cu.device = make(map[int]struct{})
+// AddUserIDs adds the user edge to User by ids.
+func (cu *ClubUpdate) AddUserIDs(ids ...int) *ClubUpdate {
+	if cu.user == nil {
+		cu.user = make(map[int]struct{})
 	}
 	for i := range ids {
-		cu.device[ids[i]] = struct{}{}
+		cu.user[ids[i]] = struct{}{}
 	}
 	return cu
 }
 
-// AddDevice adds the device edges to Device.
-func (cu *ClubUpdate) AddDevice(d ...*Device) *ClubUpdate {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// AddUser adds the user edges to User.
+func (cu *ClubUpdate) AddUser(u ...*User) *ClubUpdate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
 	}
-	return cu.AddDeviceIDs(ids...)
+	return cu.AddUserIDs(ids...)
 }
 
 // RemoveMusicIDs removes the music edge to Music by ids.
@@ -97,24 +97,24 @@ func (cu *ClubUpdate) RemoveMusic(m ...*Music) *ClubUpdate {
 	return cu.RemoveMusicIDs(ids...)
 }
 
-// RemoveDeviceIDs removes the device edge to Device by ids.
-func (cu *ClubUpdate) RemoveDeviceIDs(ids ...int) *ClubUpdate {
-	if cu.removedDevice == nil {
-		cu.removedDevice = make(map[int]struct{})
+// RemoveUserIDs removes the user edge to User by ids.
+func (cu *ClubUpdate) RemoveUserIDs(ids ...int) *ClubUpdate {
+	if cu.removedUser == nil {
+		cu.removedUser = make(map[int]struct{})
 	}
 	for i := range ids {
-		cu.removedDevice[ids[i]] = struct{}{}
+		cu.removedUser[ids[i]] = struct{}{}
 	}
 	return cu
 }
 
-// RemoveDevice removes device edges to Device.
-func (cu *ClubUpdate) RemoveDevice(d ...*Device) *ClubUpdate {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// RemoveUser removes user edges to User.
+func (cu *ClubUpdate) RemoveUser(u ...*User) *ClubUpdate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
 	}
-	return cu.RemoveDeviceIDs(ids...)
+	return cu.RemoveUserIDs(ids...)
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -207,17 +207,17 @@ func (cu *ClubUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		spec.Edges.Add = append(spec.Edges.Add, edge)
 	}
-	if nodes := cu.removedDevice; len(nodes) > 0 {
+	if nodes := cu.removedUser; len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   club.DeviceTable,
-			Columns: []string{club.DeviceColumn},
+			Table:   club.UserTable,
+			Columns: club.UserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: device.FieldID,
+					Column: user.FieldID,
 				},
 			},
 		}
@@ -226,17 +226,17 @@ func (cu *ClubUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		spec.Edges.Clear = append(spec.Edges.Clear, edge)
 	}
-	if nodes := cu.device; len(nodes) > 0 {
+	if nodes := cu.user; len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   club.DeviceTable,
-			Columns: []string{club.DeviceColumn},
+			Table:   club.UserTable,
+			Columns: club.UserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: device.FieldID,
+					Column: user.FieldID,
 				},
 			},
 		}
@@ -257,12 +257,12 @@ func (cu *ClubUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // ClubUpdateOne is the builder for updating a single Club entity.
 type ClubUpdateOne struct {
 	config
-	id            int
-	name          *string
-	music         map[int]struct{}
-	device        map[int]struct{}
-	removedMusic  map[int]struct{}
-	removedDevice map[int]struct{}
+	id           int
+	name         *string
+	music        map[int]struct{}
+	user         map[int]struct{}
+	removedMusic map[int]struct{}
+	removedUser  map[int]struct{}
 }
 
 // SetName sets the name field.
@@ -291,24 +291,24 @@ func (cuo *ClubUpdateOne) AddMusic(m ...*Music) *ClubUpdateOne {
 	return cuo.AddMusicIDs(ids...)
 }
 
-// AddDeviceIDs adds the device edge to Device by ids.
-func (cuo *ClubUpdateOne) AddDeviceIDs(ids ...int) *ClubUpdateOne {
-	if cuo.device == nil {
-		cuo.device = make(map[int]struct{})
+// AddUserIDs adds the user edge to User by ids.
+func (cuo *ClubUpdateOne) AddUserIDs(ids ...int) *ClubUpdateOne {
+	if cuo.user == nil {
+		cuo.user = make(map[int]struct{})
 	}
 	for i := range ids {
-		cuo.device[ids[i]] = struct{}{}
+		cuo.user[ids[i]] = struct{}{}
 	}
 	return cuo
 }
 
-// AddDevice adds the device edges to Device.
-func (cuo *ClubUpdateOne) AddDevice(d ...*Device) *ClubUpdateOne {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// AddUser adds the user edges to User.
+func (cuo *ClubUpdateOne) AddUser(u ...*User) *ClubUpdateOne {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
 	}
-	return cuo.AddDeviceIDs(ids...)
+	return cuo.AddUserIDs(ids...)
 }
 
 // RemoveMusicIDs removes the music edge to Music by ids.
@@ -331,24 +331,24 @@ func (cuo *ClubUpdateOne) RemoveMusic(m ...*Music) *ClubUpdateOne {
 	return cuo.RemoveMusicIDs(ids...)
 }
 
-// RemoveDeviceIDs removes the device edge to Device by ids.
-func (cuo *ClubUpdateOne) RemoveDeviceIDs(ids ...int) *ClubUpdateOne {
-	if cuo.removedDevice == nil {
-		cuo.removedDevice = make(map[int]struct{})
+// RemoveUserIDs removes the user edge to User by ids.
+func (cuo *ClubUpdateOne) RemoveUserIDs(ids ...int) *ClubUpdateOne {
+	if cuo.removedUser == nil {
+		cuo.removedUser = make(map[int]struct{})
 	}
 	for i := range ids {
-		cuo.removedDevice[ids[i]] = struct{}{}
+		cuo.removedUser[ids[i]] = struct{}{}
 	}
 	return cuo
 }
 
-// RemoveDevice removes device edges to Device.
-func (cuo *ClubUpdateOne) RemoveDevice(d ...*Device) *ClubUpdateOne {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// RemoveUser removes user edges to User.
+func (cuo *ClubUpdateOne) RemoveUser(u ...*User) *ClubUpdateOne {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
 	}
-	return cuo.RemoveDeviceIDs(ids...)
+	return cuo.RemoveUserIDs(ids...)
 }
 
 // Save executes the query and returns the updated entity.
@@ -435,17 +435,17 @@ func (cuo *ClubUpdateOne) sqlSave(ctx context.Context) (c *Club, err error) {
 		}
 		spec.Edges.Add = append(spec.Edges.Add, edge)
 	}
-	if nodes := cuo.removedDevice; len(nodes) > 0 {
+	if nodes := cuo.removedUser; len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   club.DeviceTable,
-			Columns: []string{club.DeviceColumn},
+			Table:   club.UserTable,
+			Columns: club.UserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: device.FieldID,
+					Column: user.FieldID,
 				},
 			},
 		}
@@ -454,17 +454,17 @@ func (cuo *ClubUpdateOne) sqlSave(ctx context.Context) (c *Club, err error) {
 		}
 		spec.Edges.Clear = append(spec.Edges.Clear, edge)
 	}
-	if nodes := cuo.device; len(nodes) > 0 {
+	if nodes := cuo.user; len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   club.DeviceTable,
-			Columns: []string{club.DeviceColumn},
+			Table:   club.UserTable,
+			Columns: club.UserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: device.FieldID,
+					Column: user.FieldID,
 				},
 			},
 		}

@@ -22,6 +22,6 @@ func (Club) Fields() []ent.Field {
 func (Club) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("music", Music.Type),
-		edge.To("device", Device.Type),
+		edge.To("user", User.Type),
 	}
 }

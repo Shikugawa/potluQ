@@ -20,27 +20,6 @@ var (
 		PrimaryKey:  []*schema.Column{ClubsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{},
 	}
-	// DevicesColumns holds the columns for the "devices" table.
-	DevicesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "role", Type: field.TypeEnum, Enums: []string{"jukebox", "requester"}},
-		{Name: "club_id", Type: field.TypeInt, Nullable: true},
-	}
-	// DevicesTable holds the schema information for the "devices" table.
-	DevicesTable = &schema.Table{
-		Name:       "devices",
-		Columns:    DevicesColumns,
-		PrimaryKey: []*schema.Column{DevicesColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:  "devices_clubs_device",
-				Columns: []*schema.Column{DevicesColumns[2]},
-
-				RefColumns: []*schema.Column{ClubsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-		},
-	}
 	// MusicsColumns holds the columns for the "musics" table.
 	MusicsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -75,27 +54,27 @@ var (
 		PrimaryKey:  []*schema.Column{UsersColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{},
 	}
-	// DeviceUserColumns holds the columns for the "device_user" table.
-	DeviceUserColumns = []*schema.Column{
-		{Name: "device_id", Type: field.TypeInt},
+	// ClubUserColumns holds the columns for the "club_user" table.
+	ClubUserColumns = []*schema.Column{
+		{Name: "club_id", Type: field.TypeInt},
 		{Name: "user_id", Type: field.TypeInt},
 	}
-	// DeviceUserTable holds the schema information for the "device_user" table.
-	DeviceUserTable = &schema.Table{
-		Name:       "device_user",
-		Columns:    DeviceUserColumns,
-		PrimaryKey: []*schema.Column{DeviceUserColumns[0], DeviceUserColumns[1]},
+	// ClubUserTable holds the schema information for the "club_user" table.
+	ClubUserTable = &schema.Table{
+		Name:       "club_user",
+		Columns:    ClubUserColumns,
+		PrimaryKey: []*schema.Column{ClubUserColumns[0], ClubUserColumns[1]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:  "device_user_device_id",
-				Columns: []*schema.Column{DeviceUserColumns[0]},
+				Symbol:  "club_user_club_id",
+				Columns: []*schema.Column{ClubUserColumns[0]},
 
-				RefColumns: []*schema.Column{DevicesColumns[0]},
+				RefColumns: []*schema.Column{ClubsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 			{
-				Symbol:  "device_user_user_id",
-				Columns: []*schema.Column{DeviceUserColumns[1]},
+				Symbol:  "club_user_user_id",
+				Columns: []*schema.Column{ClubUserColumns[1]},
 
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.Cascade,
@@ -105,16 +84,14 @@ var (
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		ClubsTable,
-		DevicesTable,
 		MusicsTable,
 		UsersTable,
-		DeviceUserTable,
+		ClubUserTable,
 	}
 )
 
 func init() {
-	DevicesTable.ForeignKeys[0].RefTable = ClubsTable
 	MusicsTable.ForeignKeys[0].RefTable = ClubsTable
-	DeviceUserTable.ForeignKeys[0].RefTable = DevicesTable
-	DeviceUserTable.ForeignKeys[1].RefTable = UsersTable
+	ClubUserTable.ForeignKeys[0].RefTable = ClubsTable
+	ClubUserTable.ForeignKeys[1].RefTable = UsersTable
 }

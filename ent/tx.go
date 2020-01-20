@@ -14,8 +14,6 @@ type Tx struct {
 	config
 	// Club is the client for interacting with the Club builders.
 	Club *ClubClient
-	// Device is the client for interacting with the Device builders.
-	Device *DeviceClient
 	// Music is the client for interacting with the Music builders.
 	Music *MusicClient
 	// User is the client for interacting with the User builders.
@@ -38,7 +36,6 @@ func (tx *Tx) Client() *Client {
 		config: tx.config,
 		Schema: migrate.NewSchema(tx.driver),
 		Club:   NewClubClient(tx.config),
-		Device: NewDeviceClient(tx.config),
 		Music:  NewMusicClient(tx.config),
 		User:   NewUserClient(tx.config),
 	}

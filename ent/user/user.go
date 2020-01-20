@@ -16,11 +16,11 @@ const (
 
 	// Table holds the table name of the user in the database.
 	Table = "users"
-	// DeviceTable is the table the holds the device relation/edge. The primary key declared below.
-	DeviceTable = "device_user"
-	// DeviceInverseTable is the table name for the Device entity.
-	// It exists in this package in order to avoid circular dependency with the "device" package.
-	DeviceInverseTable = "devices"
+	// ClubTable is the table the holds the club relation/edge. The primary key declared below.
+	ClubTable = "club_user"
+	// ClubInverseTable is the table name for the Club entity.
+	// It exists in this package in order to avoid circular dependency with the "club" package.
+	ClubInverseTable = "clubs"
 )
 
 // Columns holds all SQL columns are user fields.
@@ -32,7 +32,7 @@ var Columns = []string{
 }
 
 var (
-	// DevicePrimaryKey and DeviceColumn2 are the table columns denoting the
-	// primary key for the device relation (M2M).
-	DevicePrimaryKey = []string{"device_id", "user_id"}
+	// ClubPrimaryKey and ClubColumn2 are the table columns denoting the
+	// primary key for the club relation (M2M).
+	ClubPrimaryKey = []string{"club_id", "user_id"}
 )

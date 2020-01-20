@@ -6,7 +6,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/Shikugawa/potluq/ent/device"
+	"github.com/Shikugawa/potluq/ent/club"
 	"github.com/Shikugawa/potluq/ent/user"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
@@ -18,7 +18,7 @@ type UserCreate struct {
 	name     *string
 	email    *string
 	password *string
-	device   map[int]struct{}
+	club     map[int]struct{}
 }
 
 // SetName sets the name field.
@@ -39,24 +39,24 @@ func (uc *UserCreate) SetPassword(s string) *UserCreate {
 	return uc
 }
 
-// AddDeviceIDs adds the device edge to Device by ids.
-func (uc *UserCreate) AddDeviceIDs(ids ...int) *UserCreate {
-	if uc.device == nil {
-		uc.device = make(map[int]struct{})
+// AddClubIDs adds the club edge to Club by ids.
+func (uc *UserCreate) AddClubIDs(ids ...int) *UserCreate {
+	if uc.club == nil {
+		uc.club = make(map[int]struct{})
 	}
 	for i := range ids {
-		uc.device[ids[i]] = struct{}{}
+		uc.club[ids[i]] = struct{}{}
 	}
 	return uc
 }
 
-// AddDevice adds the device edges to Device.
-func (uc *UserCreate) AddDevice(d ...*Device) *UserCreate {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// AddClub adds the club edges to Club.
+func (uc *UserCreate) AddClub(c ...*Club) *UserCreate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
 	}
-	return uc.AddDeviceIDs(ids...)
+	return uc.AddClubIDs(ids...)
 }
 
 // Save creates the User in the database.
@@ -117,17 +117,17 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 		})
 		u.Password = *value
 	}
-	if nodes := uc.device; len(nodes) > 0 {
+	if nodes := uc.club; len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   user.DeviceTable,
-			Columns: user.DevicePrimaryKey,
+			Table:   user.ClubTable,
+			Columns: user.ClubPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: device.FieldID,
+					Column: club.FieldID,
 				},
 			},
 		}

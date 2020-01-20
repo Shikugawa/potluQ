@@ -497,26 +497,26 @@ func PasswordContainsFold(v string) predicate.User {
 	)
 }
 
-// HasDevice applies the HasEdge predicate on the "device" edge.
-func HasDevice() predicate.User {
+// HasClub applies the HasEdge predicate on the "club" edge.
+func HasClub() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(DeviceTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, DeviceTable, DevicePrimaryKey...),
+			sqlgraph.To(ClubTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, ClubTable, ClubPrimaryKey...),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	},
 	)
 }
 
-// HasDeviceWith applies the HasEdge predicate on the "device" edge with a given conditions (other predicates).
-func HasDeviceWith(preds ...predicate.Device) predicate.User {
+// HasClubWith applies the HasEdge predicate on the "club" edge with a given conditions (other predicates).
+func HasClubWith(preds ...predicate.Club) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(DeviceInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, DeviceTable, DevicePrimaryKey...),
+			sqlgraph.To(ClubInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, ClubTable, ClubPrimaryKey...),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

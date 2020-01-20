@@ -263,26 +263,26 @@ func HasMusicWith(preds ...predicate.Music) predicate.Club {
 	)
 }
 
-// HasDevice applies the HasEdge predicate on the "device" edge.
-func HasDevice() predicate.Club {
+// HasUser applies the HasEdge predicate on the "user" edge.
+func HasUser() predicate.Club {
 	return predicate.Club(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(DeviceTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, DeviceTable, DeviceColumn),
+			sqlgraph.To(UserTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, UserTable, UserPrimaryKey...),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	},
 	)
 }
 
-// HasDeviceWith applies the HasEdge predicate on the "device" edge with a given conditions (other predicates).
-func HasDeviceWith(preds ...predicate.Device) predicate.Club {
+// HasUserWith applies the HasEdge predicate on the "user" edge with a given conditions (other predicates).
+func HasUserWith(preds ...predicate.User) predicate.Club {
 	return predicate.Club(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(DeviceInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, DeviceTable, DeviceColumn),
+			sqlgraph.To(UserInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, UserTable, UserPrimaryKey...),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
