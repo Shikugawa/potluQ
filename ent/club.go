@@ -52,9 +52,9 @@ func (c *Club) QueryMusic() *MusicQuery {
 	return (&ClubClient{c.config}).QueryMusic(c)
 }
 
-// QueryDevice queries the device edge of the Club.
-func (c *Club) QueryDevice() *DeviceQuery {
-	return (&ClubClient{c.config}).QueryDevice(c)
+// QueryUser queries the user edge of the Club.
+func (c *Club) QueryUser() *UserQuery {
+	return (&ClubClient{c.config}).QueryUser(c)
 }
 
 // Update returns a builder for updating this Club.

@@ -5,7 +5,7 @@ package ent
 import (
 	"context"
 
-	"github.com/Shikugawa/potluq/ent/device"
+	"github.com/Shikugawa/potluq/ent/club"
 	"github.com/Shikugawa/potluq/ent/predicate"
 	"github.com/Shikugawa/potluq/ent/user"
 	"github.com/facebookincubator/ent/dialect/sql"
@@ -16,12 +16,12 @@ import (
 // UserUpdate is the builder for updating User entities.
 type UserUpdate struct {
 	config
-	name          *string
-	email         *string
-	password      *string
-	device        map[int]struct{}
-	removedDevice map[int]struct{}
-	predicates    []predicate.User
+	name        *string
+	email       *string
+	password    *string
+	club        map[int]struct{}
+	removedClub map[int]struct{}
+	predicates  []predicate.User
 }
 
 // Where adds a new predicate for the builder.
@@ -48,44 +48,44 @@ func (uu *UserUpdate) SetPassword(s string) *UserUpdate {
 	return uu
 }
 
-// AddDeviceIDs adds the device edge to Device by ids.
-func (uu *UserUpdate) AddDeviceIDs(ids ...int) *UserUpdate {
-	if uu.device == nil {
-		uu.device = make(map[int]struct{})
+// AddClubIDs adds the club edge to Club by ids.
+func (uu *UserUpdate) AddClubIDs(ids ...int) *UserUpdate {
+	if uu.club == nil {
+		uu.club = make(map[int]struct{})
 	}
 	for i := range ids {
-		uu.device[ids[i]] = struct{}{}
+		uu.club[ids[i]] = struct{}{}
 	}
 	return uu
 }
 
-// AddDevice adds the device edges to Device.
-func (uu *UserUpdate) AddDevice(d ...*Device) *UserUpdate {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// AddClub adds the club edges to Club.
+func (uu *UserUpdate) AddClub(c ...*Club) *UserUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
 	}
-	return uu.AddDeviceIDs(ids...)
+	return uu.AddClubIDs(ids...)
 }
 
-// RemoveDeviceIDs removes the device edge to Device by ids.
-func (uu *UserUpdate) RemoveDeviceIDs(ids ...int) *UserUpdate {
-	if uu.removedDevice == nil {
-		uu.removedDevice = make(map[int]struct{})
+// RemoveClubIDs removes the club edge to Club by ids.
+func (uu *UserUpdate) RemoveClubIDs(ids ...int) *UserUpdate {
+	if uu.removedClub == nil {
+		uu.removedClub = make(map[int]struct{})
 	}
 	for i := range ids {
-		uu.removedDevice[ids[i]] = struct{}{}
+		uu.removedClub[ids[i]] = struct{}{}
 	}
 	return uu
 }
 
-// RemoveDevice removes device edges to Device.
-func (uu *UserUpdate) RemoveDevice(d ...*Device) *UserUpdate {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// RemoveClub removes club edges to Club.
+func (uu *UserUpdate) RemoveClub(c ...*Club) *UserUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
 	}
-	return uu.RemoveDeviceIDs(ids...)
+	return uu.RemoveClubIDs(ids...)
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -154,17 +154,17 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldPassword,
 		})
 	}
-	if nodes := uu.removedDevice; len(nodes) > 0 {
+	if nodes := uu.removedClub; len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   user.DeviceTable,
-			Columns: user.DevicePrimaryKey,
+			Table:   user.ClubTable,
+			Columns: user.ClubPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: device.FieldID,
+					Column: club.FieldID,
 				},
 			},
 		}
@@ -173,17 +173,17 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		spec.Edges.Clear = append(spec.Edges.Clear, edge)
 	}
-	if nodes := uu.device; len(nodes) > 0 {
+	if nodes := uu.club; len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   user.DeviceTable,
-			Columns: user.DevicePrimaryKey,
+			Table:   user.ClubTable,
+			Columns: user.ClubPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: device.FieldID,
+					Column: club.FieldID,
 				},
 			},
 		}
@@ -204,12 +204,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // UserUpdateOne is the builder for updating a single User entity.
 type UserUpdateOne struct {
 	config
-	id            int
-	name          *string
-	email         *string
-	password      *string
-	device        map[int]struct{}
-	removedDevice map[int]struct{}
+	id          int
+	name        *string
+	email       *string
+	password    *string
+	club        map[int]struct{}
+	removedClub map[int]struct{}
 }
 
 // SetName sets the name field.
@@ -230,44 +230,44 @@ func (uuo *UserUpdateOne) SetPassword(s string) *UserUpdateOne {
 	return uuo
 }
 
-// AddDeviceIDs adds the device edge to Device by ids.
-func (uuo *UserUpdateOne) AddDeviceIDs(ids ...int) *UserUpdateOne {
-	if uuo.device == nil {
-		uuo.device = make(map[int]struct{})
+// AddClubIDs adds the club edge to Club by ids.
+func (uuo *UserUpdateOne) AddClubIDs(ids ...int) *UserUpdateOne {
+	if uuo.club == nil {
+		uuo.club = make(map[int]struct{})
 	}
 	for i := range ids {
-		uuo.device[ids[i]] = struct{}{}
+		uuo.club[ids[i]] = struct{}{}
 	}
 	return uuo
 }
 
-// AddDevice adds the device edges to Device.
-func (uuo *UserUpdateOne) AddDevice(d ...*Device) *UserUpdateOne {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// AddClub adds the club edges to Club.
+func (uuo *UserUpdateOne) AddClub(c ...*Club) *UserUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
 	}
-	return uuo.AddDeviceIDs(ids...)
+	return uuo.AddClubIDs(ids...)
 }
 
-// RemoveDeviceIDs removes the device edge to Device by ids.
-func (uuo *UserUpdateOne) RemoveDeviceIDs(ids ...int) *UserUpdateOne {
-	if uuo.removedDevice == nil {
-		uuo.removedDevice = make(map[int]struct{})
+// RemoveClubIDs removes the club edge to Club by ids.
+func (uuo *UserUpdateOne) RemoveClubIDs(ids ...int) *UserUpdateOne {
+	if uuo.removedClub == nil {
+		uuo.removedClub = make(map[int]struct{})
 	}
 	for i := range ids {
-		uuo.removedDevice[ids[i]] = struct{}{}
+		uuo.removedClub[ids[i]] = struct{}{}
 	}
 	return uuo
 }
 
-// RemoveDevice removes device edges to Device.
-func (uuo *UserUpdateOne) RemoveDevice(d ...*Device) *UserUpdateOne {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// RemoveClub removes club edges to Club.
+func (uuo *UserUpdateOne) RemoveClub(c ...*Club) *UserUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
 	}
-	return uuo.RemoveDeviceIDs(ids...)
+	return uuo.RemoveClubIDs(ids...)
 }
 
 // Save executes the query and returns the updated entity.
@@ -330,17 +330,17 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 			Column: user.FieldPassword,
 		})
 	}
-	if nodes := uuo.removedDevice; len(nodes) > 0 {
+	if nodes := uuo.removedClub; len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   user.DeviceTable,
-			Columns: user.DevicePrimaryKey,
+			Table:   user.ClubTable,
+			Columns: user.ClubPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: device.FieldID,
+					Column: club.FieldID,
 				},
 			},
 		}
@@ -349,17 +349,17 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 		}
 		spec.Edges.Clear = append(spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.device; len(nodes) > 0 {
+	if nodes := uuo.club; len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   user.DeviceTable,
-			Columns: user.DevicePrimaryKey,
+			Table:   user.ClubTable,
+			Columns: user.ClubPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: device.FieldID,
+					Column: club.FieldID,
 				},
 			},
 		}

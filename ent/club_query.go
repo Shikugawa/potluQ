@@ -9,9 +9,9 @@ import (
 	"math"
 
 	"github.com/Shikugawa/potluq/ent/club"
-	"github.com/Shikugawa/potluq/ent/device"
 	"github.com/Shikugawa/potluq/ent/music"
 	"github.com/Shikugawa/potluq/ent/predicate"
+	"github.com/Shikugawa/potluq/ent/user"
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
@@ -65,13 +65,13 @@ func (cq *ClubQuery) QueryMusic() *MusicQuery {
 	return query
 }
 
-// QueryDevice chains the current query on the device edge.
-func (cq *ClubQuery) QueryDevice() *DeviceQuery {
-	query := &DeviceQuery{config: cq.config}
+// QueryUser chains the current query on the user edge.
+func (cq *ClubQuery) QueryUser() *UserQuery {
+	query := &UserQuery{config: cq.config}
 	step := sqlgraph.NewStep(
 		sqlgraph.From(club.Table, club.FieldID, cq.sqlQuery()),
-		sqlgraph.To(device.Table, device.FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, club.DeviceTable, club.DeviceColumn),
+		sqlgraph.To(user.Table, user.FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, false, club.UserTable, club.UserPrimaryKey...),
 	)
 	query.sql = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
 	return query

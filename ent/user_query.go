@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/Shikugawa/potluq/ent/device"
+	"github.com/Shikugawa/potluq/ent/club"
 	"github.com/Shikugawa/potluq/ent/predicate"
 	"github.com/Shikugawa/potluq/ent/user"
 	"github.com/facebookincubator/ent/dialect/sql"
@@ -52,13 +52,13 @@ func (uq *UserQuery) Order(o ...Order) *UserQuery {
 	return uq
 }
 
-// QueryDevice chains the current query on the device edge.
-func (uq *UserQuery) QueryDevice() *DeviceQuery {
-	query := &DeviceQuery{config: uq.config}
+// QueryClub chains the current query on the club edge.
+func (uq *UserQuery) QueryClub() *ClubQuery {
+	query := &ClubQuery{config: uq.config}
 	step := sqlgraph.NewStep(
 		sqlgraph.From(user.Table, user.FieldID, uq.sqlQuery()),
-		sqlgraph.To(device.Table, device.FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, user.DeviceTable, user.DevicePrimaryKey...),
+		sqlgraph.To(club.Table, club.FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, user.ClubTable, user.ClubPrimaryKey...),
 	)
 	query.sql = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 	return query

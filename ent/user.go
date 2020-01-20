@@ -63,9 +63,9 @@ func (u *User) assignValues(values ...interface{}) error {
 	return nil
 }
 
-// QueryDevice queries the device edge of the User.
-func (u *User) QueryDevice() *DeviceQuery {
-	return (&UserClient{u.config}).QueryDevice(u)
+// QueryClub queries the club edge of the User.
+func (u *User) QueryClub() *ClubQuery {
+	return (&UserClient{u.config}).QueryClub(u)
 }
 
 // Update returns a builder for updating this User.

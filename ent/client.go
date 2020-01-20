@@ -10,7 +10,6 @@ import (
 	"github.com/Shikugawa/potluq/ent/migrate"
 
 	"github.com/Shikugawa/potluq/ent/club"
-	"github.com/Shikugawa/potluq/ent/device"
 	"github.com/Shikugawa/potluq/ent/music"
 	"github.com/Shikugawa/potluq/ent/user"
 
@@ -26,8 +25,6 @@ type Client struct {
 	Schema *migrate.Schema
 	// Club is the client for interacting with the Club builders.
 	Club *ClubClient
-	// Device is the client for interacting with the Device builders.
-	Device *DeviceClient
 	// Music is the client for interacting with the Music builders.
 	Music *MusicClient
 	// User is the client for interacting with the User builders.
@@ -42,7 +39,6 @@ func NewClient(opts ...Option) *Client {
 		config: c,
 		Schema: migrate.NewSchema(c.driver),
 		Club:   NewClubClient(c),
-		Device: NewDeviceClient(c),
 		Music:  NewMusicClient(c),
 		User:   NewUserClient(c),
 	}
@@ -77,7 +73,6 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		config: cfg,
 		Club:   NewClubClient(cfg),
-		Device: NewDeviceClient(cfg),
 		Music:  NewMusicClient(cfg),
 		User:   NewUserClient(cfg),
 	}, nil
@@ -99,7 +94,6 @@ func (c *Client) Debug() *Client {
 		config: cfg,
 		Schema: migrate.NewSchema(cfg.driver),
 		Club:   NewClubClient(cfg),
-		Device: NewDeviceClient(cfg),
 		Music:  NewMusicClient(cfg),
 		User:   NewUserClient(cfg),
 	}
@@ -188,108 +182,16 @@ func (c *ClubClient) QueryMusic(cl *Club) *MusicQuery {
 	return query
 }
 
-// QueryDevice queries the device edge of a Club.
-func (c *ClubClient) QueryDevice(cl *Club) *DeviceQuery {
-	query := &DeviceQuery{config: c.config}
+// QueryUser queries the user edge of a Club.
+func (c *ClubClient) QueryUser(cl *Club) *UserQuery {
+	query := &UserQuery{config: c.config}
 	id := cl.ID
 	step := sqlgraph.NewStep(
 		sqlgraph.From(club.Table, club.FieldID, id),
-		sqlgraph.To(device.Table, device.FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, club.DeviceTable, club.DeviceColumn),
+		sqlgraph.To(user.Table, user.FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, false, club.UserTable, club.UserPrimaryKey...),
 	)
 	query.sql = sqlgraph.Neighbors(cl.driver.Dialect(), step)
-
-	return query
-}
-
-// DeviceClient is a client for the Device schema.
-type DeviceClient struct {
-	config
-}
-
-// NewDeviceClient returns a client for the Device from the given config.
-func NewDeviceClient(c config) *DeviceClient {
-	return &DeviceClient{config: c}
-}
-
-// Create returns a create builder for Device.
-func (c *DeviceClient) Create() *DeviceCreate {
-	return &DeviceCreate{config: c.config}
-}
-
-// Update returns an update builder for Device.
-func (c *DeviceClient) Update() *DeviceUpdate {
-	return &DeviceUpdate{config: c.config}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *DeviceClient) UpdateOne(d *Device) *DeviceUpdateOne {
-	return c.UpdateOneID(d.ID)
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *DeviceClient) UpdateOneID(id int) *DeviceUpdateOne {
-	return &DeviceUpdateOne{config: c.config, id: id}
-}
-
-// Delete returns a delete builder for Device.
-func (c *DeviceClient) Delete() *DeviceDelete {
-	return &DeviceDelete{config: c.config}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *DeviceClient) DeleteOne(d *Device) *DeviceDeleteOne {
-	return c.DeleteOneID(d.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *DeviceClient) DeleteOneID(id int) *DeviceDeleteOne {
-	return &DeviceDeleteOne{c.Delete().Where(device.ID(id))}
-}
-
-// Create returns a query builder for Device.
-func (c *DeviceClient) Query() *DeviceQuery {
-	return &DeviceQuery{config: c.config}
-}
-
-// Get returns a Device entity by its id.
-func (c *DeviceClient) Get(ctx context.Context, id int) (*Device, error) {
-	return c.Query().Where(device.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *DeviceClient) GetX(ctx context.Context, id int) *Device {
-	d, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return d
-}
-
-// QueryClub queries the club edge of a Device.
-func (c *DeviceClient) QueryClub(d *Device) *ClubQuery {
-	query := &ClubQuery{config: c.config}
-	id := d.ID
-	step := sqlgraph.NewStep(
-		sqlgraph.From(device.Table, device.FieldID, id),
-		sqlgraph.To(club.Table, club.FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, device.ClubTable, device.ClubColumn),
-	)
-	query.sql = sqlgraph.Neighbors(d.driver.Dialect(), step)
-
-	return query
-}
-
-// QueryUser queries the user edge of a Device.
-func (c *DeviceClient) QueryUser(d *Device) *UserQuery {
-	query := &UserQuery{config: c.config}
-	id := d.ID
-	step := sqlgraph.NewStep(
-		sqlgraph.From(device.Table, device.FieldID, id),
-		sqlgraph.To(user.Table, user.FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, device.UserTable, device.UserPrimaryKey...),
-	)
-	query.sql = sqlgraph.Neighbors(d.driver.Dialect(), step)
 
 	return query
 }
@@ -436,14 +338,14 @@ func (c *UserClient) GetX(ctx context.Context, id int) *User {
 	return u
 }
 
-// QueryDevice queries the device edge of a User.
-func (c *UserClient) QueryDevice(u *User) *DeviceQuery {
-	query := &DeviceQuery{config: c.config}
+// QueryClub queries the club edge of a User.
+func (c *UserClient) QueryClub(u *User) *ClubQuery {
+	query := &ClubQuery{config: c.config}
 	id := u.ID
 	step := sqlgraph.NewStep(
 		sqlgraph.From(user.Table, user.FieldID, id),
-		sqlgraph.To(device.Table, device.FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, user.DeviceTable, user.DevicePrimaryKey...),
+		sqlgraph.To(club.Table, club.FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, user.ClubTable, user.ClubPrimaryKey...),
 	)
 	query.sql = sqlgraph.Neighbors(u.driver.Dialect(), step)
 

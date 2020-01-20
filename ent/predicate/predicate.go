@@ -9,9 +9,6 @@ import (
 // Club is the predicate function for club builders.
 type Club func(*sql.Selector)
 
-// Device is the predicate function for device builders.
-type Device func(*sql.Selector)
-
 // Music is the predicate function for music builders.
 type Music func(*sql.Selector)
 

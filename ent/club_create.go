@@ -7,8 +7,8 @@ import (
 	"errors"
 
 	"github.com/Shikugawa/potluq/ent/club"
-	"github.com/Shikugawa/potluq/ent/device"
 	"github.com/Shikugawa/potluq/ent/music"
+	"github.com/Shikugawa/potluq/ent/user"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 )
@@ -16,9 +16,9 @@ import (
 // ClubCreate is the builder for creating a Club entity.
 type ClubCreate struct {
 	config
-	name   *string
-	music  map[int]struct{}
-	device map[int]struct{}
+	name  *string
+	music map[int]struct{}
+	user  map[int]struct{}
 }
 
 // SetName sets the name field.
@@ -47,24 +47,24 @@ func (cc *ClubCreate) AddMusic(m ...*Music) *ClubCreate {
 	return cc.AddMusicIDs(ids...)
 }
 
-// AddDeviceIDs adds the device edge to Device by ids.
-func (cc *ClubCreate) AddDeviceIDs(ids ...int) *ClubCreate {
-	if cc.device == nil {
-		cc.device = make(map[int]struct{})
+// AddUserIDs adds the user edge to User by ids.
+func (cc *ClubCreate) AddUserIDs(ids ...int) *ClubCreate {
+	if cc.user == nil {
+		cc.user = make(map[int]struct{})
 	}
 	for i := range ids {
-		cc.device[ids[i]] = struct{}{}
+		cc.user[ids[i]] = struct{}{}
 	}
 	return cc
 }
 
-// AddDevice adds the device edges to Device.
-func (cc *ClubCreate) AddDevice(d ...*Device) *ClubCreate {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// AddUser adds the user edges to User.
+func (cc *ClubCreate) AddUser(u ...*User) *ClubCreate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
 	}
-	return cc.AddDeviceIDs(ids...)
+	return cc.AddUserIDs(ids...)
 }
 
 // Save creates the Club in the database.
@@ -122,17 +122,17 @@ func (cc *ClubCreate) sqlSave(ctx context.Context) (*Club, error) {
 		}
 		spec.Edges = append(spec.Edges, edge)
 	}
-	if nodes := cc.device; len(nodes) > 0 {
+	if nodes := cc.user; len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   club.DeviceTable,
-			Columns: []string{club.DeviceColumn},
+			Table:   club.UserTable,
+			Columns: club.UserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: device.FieldID,
+					Column: user.FieldID,
 				},
 			},
 		}
